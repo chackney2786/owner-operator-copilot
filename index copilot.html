@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Owner Operator Copilot V13.1 Billy Fuel UI</title>
+<style>
+:root{
+  --bg:#07111f;--card:#0f1b2d;--card2:#14233a;--text:#f7f9fc;--muted:#aab7c8;
+  --line:rgba(255,255,255,.12);--gold:#f6bd41;--green:#33c481;--yellow:#f6bd41;--red:#ff6868;
+  --radius:18px;--shadow:0 16px 40px rgba(0,0,0,.30);--max:1120px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top right,rgba(246,189,65,.10),transparent 28rem),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.4}
+.container{width:min(calc(100% - 24px),var(--max));margin:auto}
+header{position:sticky;top:0;z-index:10;background:rgba(7,17,31,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.03em}
+.logo{width:38px;height:38px;border-radius:12px;background:var(--gold);color:#111;display:grid;place-items:center;font-weight:950}
+.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:850;cursor:pointer}
+.primary{background:var(--gold);color:#111}.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}
+.hero{padding:30px 0 14px}.hero h1{margin:0;font-size:clamp(32px,5vw,54px);line-height:1.02;letter-spacing:-.055em}.hero p{color:var(--muted);max-width:760px}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.tab{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:10px 13px;font-weight:850;cursor:pointer}.tab.active{background:var(--gold);color:#111;border-color:transparent}
+.page{display:none}.page.active{display:block}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;margin-top:5px;font-size:26px;letter-spacing:-.035em}.metric.big strong{font-size:38px}
+h2,h3{margin:0 0 14px;letter-spacing:-.035em}.small{color:var(--muted);font-size:13px}.pill{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:12px;color:var(--muted);font-weight:800;align-items:center;gap:6px}
+.green{color:var(--green)}.yellow{color:var(--yellow)}.red{color:var(--red)}
+.stop{width:10px;height:10px;border-radius:999px;display:inline-block}.stop.green{background:var(--green)}.stop.yellow{background:var(--yellow)}.stop.red{background:var(--red)}
+.field{display:grid;gap:6px}.field label{font-size:13px;color:var(--muted)}
+.input{display:flex;align-items:center;gap:7px;background:#091426;border:1px solid var(--line);border-radius:12px;padding:0 11px}.input span{font-size:13px;color:var(--muted)}
+input,select{width:100%;background:transparent;color:var(--text);border:0;outline:0;padding:12px 0}select option{color:#111}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.bar{height:12px;background:#0a1425;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:10px}.fill{height:100%;background:var(--green);width:0%}
+.chart{height:170px;display:flex;align-items:end;gap:8px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:15px;padding:14px}.chart div{flex:1;background:linear-gradient(180deg,var(--gold),rgba(246,189,65,.35));border-radius:8px 8px 0 0;min-height:5px}
+.decision{border-radius:18px;padding:20px;border:1px solid rgba(51,196,129,.35);background:rgba(51,196,129,.10)}.decision h2{font-size:42px;color:var(--green);margin:0}.warn{border-color:rgba(246,189,65,.35);background:rgba(246,189,65,.09)}.warn h2{color:var(--yellow)}.bad{border-color:rgba(255,104,104,.35);background:rgba(255,104,104,.09)}.bad h2{color:var(--red)}
+.upload{border:1px dashed rgba(255,255,255,.28);border-radius:16px;padding:18px;text-align:center;background:rgba(255,255,255,.025)}
+.preview{display:none;max-width:100%;max-height:240px;margin-top:12px;border-radius:12px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:rgba(51,196,129,.96);color:#06111f;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 14px 35px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.22s ease;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fab{display:none}
+footer{padding:28px 0;color:var(--muted);font-size:12px}
+@media(max-width:720px){
+  .container{width:min(calc(100% - 18px),var(--max))}
+  .nav{min-height:58px}.brand{font-size:14px}.logo{width:34px;height:34px}.nav .btn{display:none}
+  .hero{padding:24px 0 10px}.hero h1{font-size:29px}.hero p{font-size:14px}
+  .tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}.tab{white-space:nowrap;font-size:12px;padding:9px 11px}
+  .grid4{grid-template-columns:1fr 1fr}.grid3,.grid2{grid-template-columns:1fr}.card{padding:14px;border-radius:15px}
+  .metric strong{font-size:21px}.metric.big strong{font-size:27px}
+  .chart{height:135px}.btn{padding:10px 12px;font-size:13px}.decision h2{font-size:34px}
+  .fab{display:block;position:fixed;right:14px;bottom:14px;z-index:50;background:var(--gold);color:#111;border:0;border-radius:999px;padding:12px 15px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+  .toast{bottom:72px;font-size:13px;padding:10px 14px}
+}
+
+.modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal{width:min(900px,100%);max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.modalBackdrop.show{display:flex}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;font-size:12px;font-weight:900;border:1px solid var(--line)}
+.badge.elite{background:rgba(51,196,129,.18);color:var(--green)}
+.badge.strong{background:rgba(96,165,250,.18);color:#7db4ff}
+.badge.borderline{background:rgba(246,189,65,.18);color:var(--yellow)}
+.badge.weak{background:rgba(255,104,104,.18);color:var(--red)}
+.actionRow{display:flex;gap:7px;flex-wrap:wrap}
+.btn.mini{padding:7px 9px;font-size:12px;border-radius:9px}
+
+.uploadPreviewBox{border:1px dashed var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.04)}
+.uploadPreviewBox img{width:100%;max-height:560px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#111}
+.extractGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.extractGrid{grid-template-columns:1fr}}
+.warningList{display:grid;gap:8px;margin-top:10px}
+.warningItem{border:1px solid rgba(246,189,65,.45);background:rgba(246,189,65,.12);color:var(--yellow);padding:9px;border-radius:10px;font-weight:800;font-size:13px}
+.successItem{border:1px solid rgba(51,196,129,.45);background:rgba(51,196,129,.12);color:var(--green);padding:9px;border-radius:10px;font-weight:800;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand"><span class="logo">OC</span><span>Owner Operator Copilot</span></div>
+    <button class="btn primary" onclick="showPage('analyze')">Analyze Load</button>
+  </div>
+</header>
+
+<main class="container">
+<section class="hero">
+  <span class="pill">V13.1 · Load Upload + Billy Fuel UI</span>
+  <h1>Clarity for your trucking business.</h1>
+  <p>Know what you keep, not just what it pays. Upload release plus Billy fuel UI: truck stop dropdown, state dropdown, and separate Diesel/DEF sections.</p>
+  <div class="tabs">
+    <button id="tab-dashboard" class="tab active" onclick="showPage('dashboard')">Dashboard</button>
+    <button id="tab-upload" class="tab" onclick="showPage('upload')">Load Upload</button>
+    <button id="tab-operation" class="tab" onclick="showPage('operation')">My Operation</button>
+    <button id="tab-analyze" class="tab" onclick="showPage('analyze')">Analyze</button>
+    <button id="tab-fuel" class="tab" onclick="showPage('fuel')">Fuel</button>
+    <button id="tab-history" class="tab" onclick="showPage('history')">Load History</button>
+    <button id="tab-review" class="tab" onclick="showPage('review')">Weekly Review</button>
+    <button id="tab-settlements" class="tab" onclick="showPage('settlements')">Settlements</button>
+    <button id="tab-reality" class="tab" onclick="showPage('reality')">V11.5 Notes</button>
+  </div>
+</section>
+
+<section id="dashboard" class="page active">
+  <div class="grid4">
+    <div class="card metric"><span>Gross revenue</span><strong id="dashGross">$0</strong></div>
+    <div class="card metric"><span>Revenue to truck</span><strong id="dashTruck">$0</strong></div>
+    <div class="card metric big"><span>Net profit</span><strong id="dashNet">$0</strong></div>
+    <div class="card metric"><span>Business health</span><strong id="dashHealth">0/10</strong><span id="dashHealthLabel" class="pill"><i class="stop red"></i>Needs Data</span></div>
+  </div>
+  <br>
+  <div class="card">
+    <h2>Weekly goal progress</h2>
+    <div class="bar"><div id="goalFill" class="fill"></div></div>
+    <p id="goalText" class="small">0% toward weekly goal.</p>
+  </div>
+  <br>
+  <div class="card">
+    <h2>Weekly net profit trend</h2>
+    <div id="chart" class="chart"></div>
+  </div>
+  <br>
+  <div class="grid2">
+    <div class="card"><h2>🚛 Weekly Review</h2><p id="weeklyReview" class="small">Save a load to generate your weekly review.</p></div>
+    <div class="card"><h2>🏆 Achievements</h2><p id="achievements" class="small">No achievements yet.</p></div>
+  </div>
+</section>
+
+<section id="operation" class="page">
+  <div class="card">
+    <h2>🚛 Welcome Chris</h2>
+    <h3 style="margin-top:-8px;color:var(--gold)">Blue Compass Trucking LLC</h3>
+    <p class="small">This is your operation profile. Configure once, then update only when something changes.</p>
+    <div class="grid3">
+      <div class="card metric"><span>Business Health</span><strong id="profileHealth">0/10</strong><span id="profileHealthLabel" class="pill"><i class="stop red"></i>Needs Data</span></div>
+      <div class="card metric"><span>Last profile update</span><strong id="lastUpdated">Today</strong></div>
+      <div class="card metric"><span>Profile checkup</span><strong>Quarterly</strong><span class="small">Review every 90 days.</span></div>
+    </div>
+    <hr>
+    <h3>Operation</h3>
+    <div class="grid3">
+      <div class="field"><label>Operation type</label><div class="input"><select id="opType"><option>Leased-On Owner Operator</option><option>Own Authority</option><option>Fleet Owner - Coming Soon</option></select></div></div>
+      <div class="field"><label>Carrier / company</label><div class="input"><select id="carrier"><option>Mercer</option><option>Landstar</option><option>F2F</option><option>JB Hunt</option><option>Schneider</option><option>Prime</option><option>Own Authority</option><option>Custom</option></select></div></div>
+      <div class="field"><label>Trailer type</label><div class="input"><select id="trailer"><option>Dry Van</option><option>Reefer</option><option>Flatbed</option><option>Stepdeck</option><option>Power Only</option><option>Car Hauler</option><option>Tanker</option><option>Custom</option></select></div></div>
+      <div class="field"><label>Truck MPG</label><div class="input"><input id="mpg" type="number" value="6.8" step=".1"><span>mpg</span></div></div>
+      <div class="field"><label>Carrier pay structure</label><div class="input"><select id="cutAppliesTo"><option value="linehaul_only">Cut applies to linehaul only</option><option value="whole_order">Cut applies to whole order</option></select></div></div>
+      <div class="field"><label>Revenue numbers entered are</label><div class="input"><select id="revenueInputBasis"><option value="driver_revenue">Already driver revenue / settlement-style</option><option value="broker_gross">Broker/customer gross before carrier split</option></select></div></div>
+      <div class="field" id="linehaulPercentField"><label>Linehaul driver percent</label><div class="input"><input id="linehaulDriverPercent" type="number" value="75" step=".1"><span>%</span></div></div>
+      <div class="field" id="orderPercentField"><label>Order driver percent</label><div class="input"><input id="orderDriverPercent" type="number" value="80" step=".1"><span>%</span></div></div>
+      <div class="field" id="fscPercentField"><label>FSC driver percent</label><div class="input"><input id="fscDriverPercent" type="number" value="100" step=".1"><span>%</span></div></div>
+      <div class="field"><label>FSC known at booking?</label><div class="input"><select id="fscKnownAtBooking"><option value="true">Yes</option><option value="false">No / estimated</option></select></div></div>
+      <div class="field"><label>FSC estimate note</label><div class="input"><input id="fscEstimateNote" value="If unknown, enter your best estimate."></div></div>
+      <div class="field"><label>Carrier profile confidence</label><div class="input"><select id="carrierConfidence"><option>Carrier default</option><option>Based on uploaded settlements</option><option>Manual override</option></select></div></div>
+    </div>
+    <hr>
+    <div class="card" style="background:rgba(246,189,65,.07)">
+      <h3>📚 Settlement Intelligence</h3>
+      <p class="small"><strong>Reality Update:</strong> Mercer, Landstar, JB Hunt, and F2F do not all pay the same way. The more settlements you upload, the smarter Copilot becomes.</p>
+      <div class="grid2">
+        <div class="card metric"><span>Carrier model</span><strong id="carrierModelLabel">Linehaul only</strong></div>
+        <div class="card metric"><span>FSC status</span><strong id="fscStatusLabel">Known</strong></div>
+      </div>
+    </div>
+    <hr>
+    <h3>Truck</h3>
+    <div class="grid3">
+      <div class="field"><label>Truck payment amount</label><div class="input"><span>$</span><input id="truckPay" type="number" value="850"></div></div>
+      <div class="field"><label>Truck payment frequency</label><div class="input"><select id="truckPayFreq"><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option><option>Paid Off</option></select></div></div>
+      <div class="field"><label>Truck insurance amount</label><div class="input"><span>$</span><input id="insurance" type="number" value="325"></div></div>
+      <div class="field"><label>Truck insurance frequency</label><div class="input"><select id="insuranceFreq"><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option></select></div></div>
+      <div class="field"><label>Maintenance reserve</label><div class="input"><span>$</span><input id="maintPerMile" type="number" value=".03" step=".01"><span>/mi</span></div></div>
+    </div>
+    <hr>
+    <h3>Trailer</h3>
+    <div class="grid3">
+      <div class="field"><label>Trailer payment amount</label><div class="input"><span>$</span><input id="trailerPay" type="number" value="0"></div></div>
+      <div class="field"><label>Trailer payment frequency</label><div class="input"><select id="trailerPayFreq"><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option><option>Paid Off</option></select></div></div>
+      <div class="field"><label>Trailer insurance amount</label><div class="input"><span>$</span><input id="trailerIns" type="number" value="0"></div></div>
+      <div class="field"><label>Trailer insurance frequency</label><div class="input"><select id="trailerInsFreq"><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option></select></div></div>
+      <div class="field"><label>Trailer registration/plates</label><div class="input"><span>$</span><input id="trailerReg" type="number" value="0"></div></div>
+      <div class="field"><label>Trailer registration frequency</label><div class="input"><select id="trailerRegFreq"><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option></select></div></div>
+    </div>
+    <hr>
+    <h3>Other Business Expenses</h3>
+    <div class="grid3">
+      <div class="field"><label>ELD / logs</label><div class="input"><span>$</span><input id="eld" type="number" value="75"></div></div>
+      <div class="field"><label>ELD frequency</label><div class="input"><select id="eldFreq"><option>Monthly</option><option>Weekly</option><option>Biweekly</option><option>Quarterly</option><option>Annual</option></select></div></div>
+      <div class="field"><label>Plates / permits</label><div class="input"><span>$</span><input id="plates" type="number" value="250"></div></div>
+      <div class="field"><label>Plates frequency</label><div class="input"><select id="platesFreq"><option>Monthly</option><option>Weekly</option><option>Biweekly</option><option>Quarterly</option><option>Annual</option></select></div></div>
+      <div class="field"><label>Other fixed</label><div class="input"><span>$</span><input id="otherFixed" type="number" value="200"></div></div>
+      <div class="field"><label>Other fixed frequency</label><div class="input"><select id="otherFixedFreq"><option>Monthly</option><option>Weekly</option><option>Biweekly</option><option>Quarterly</option><option>Annual</option></select></div></div>
+    </div>
+    <hr>
+    <h3>Household Expenses</h3>
+    <p class="small">Separate from truck expenses. Turn this off if living in the truck or not including household costs.</p>
+    <div class="grid3">
+      <div class="field"><label>Include household?</label><div class="input"><select id="houseIncluded"><option value="yes">Yes</option><option value="no">No / living in truck</option></select></div></div>
+      <div class="field"><label>Housing / month</label><div class="input"><span>$</span><input id="housing" type="number" value="1600"></div></div>
+      <div class="field"><label>Utilities / month</label><div class="input"><span>$</span><input id="utilities" type="number" value="400"></div></div>
+      <div class="field"><label>Car payment / month</label><div class="input"><span>$</span><input id="carPayment" type="number" value="0"></div></div>
+      <div class="field"><label>Car insurance / month</label><div class="input"><span>$</span><input id="carInsurance" type="number" value="0"></div></div>
+      <div class="field"><label>Credit cards / month</label><div class="input"><span>$</span><input id="creditCards" type="number" value="0"></div></div>
+      <div class="field"><label>Food / family / month</label><div class="input"><span>$</span><input id="personalBills" type="number" value="1200"></div></div>
+      <div class="field"><label>Other household / month</label><div class="input"><span>$</span><input id="otherHousehold" type="number" value="0"></div></div>
+    </div>
+    <hr>
+    <h3>Goals, Draw & Reserves</h3>
+    <div class="grid3">
+      <div class="field"><label>Weekly net profit goal</label><div class="input"><span>$</span><input id="weeklyGoal" type="number" value="4000"></div></div>
+      <div class="field"><label>Minimum profit/hour</label><div class="input"><span>$</span><input id="minProfitHour" type="number" value="40" step="1"><span>/hr</span></div></div>
+      <div class="field"><label>Planned weekly draw</label><div class="input"><span>$</span><input id="plannedDraw" type="number" value="1000"></div></div>
+      <div class="field"><label>Tax reserve</label><div class="input"><input id="taxPct" type="number" value="25" step="1"><span>%</span></div></div>
+      <div class="field"><label>Maintenance goal</label><div class="input"><span>$</span><input id="maintenanceGoal" type="number" value="30000"></div></div>
+      <div class="field"><label>Maintenance current</label><div class="input"><span>$</span><input id="maintenanceCurrent" type="number" value="0"></div></div>
+      <div class="field"><label>Emergency goal</label><div class="input"><span>$</span><input id="emergencyGoal" type="number" value="10000"></div></div>
+      <div class="field"><label>Emergency current</label><div class="input"><span>$</span><input id="emergencyCurrent" type="number" value="0"></div></div>
+    </div>
+    <br>
+    <button class="btn primary" onclick="saveProfile();showToast('Profile saved ✅')">Save Profile</button>
+    <button class="btn secondary" onclick="factoryReset()">Factory Reset</button>
+  </div>
+</section>
+
+
+<section id="upload" class="page">
+  <div class="card">
+    <h2>📸 Load Upload V1</h2>
+    <p class="small">Preview mode. Upload a load board or dispatch screenshot, confirm the fields, then send it into Analyze. AI extraction plugs into this flow later.</p>
+  </div>
+  <br>
+  <div class="grid2">
+    <div class="card">
+      <h3>1. Upload Load Screenshot</h3>
+      <div class="uploadPreviewBox">
+        <input id="loadScreenshotFile" type="file" accept="image/*" onchange="previewLoadScreenshot(event)">
+        <br><br>
+        <div id="loadScreenshotPreview" class="small">No screenshot uploaded yet.</div>
+      </div>
+      <br>
+      <div class="card" style="box-shadow:none">
+        <h3>What V1 is testing</h3>
+        <p class="small">The goal is not perfect AI yet. The goal is to make the future workflow feel right: screenshot → extracted fields → confirm → analyze.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. Confirm Extracted Fields</h3>
+      <p class="small">For now, enter the fields you see in the screenshot. Later AI will fill these automatically and the driver will only confirm or fix missing fields.</p>
+
+      <div class="extractGrid">
+        <div class="field"><label>Source / Board</label><div class="input"><select id="uploadSource">
+          <option>Mercer</option><option>Landstar</option><option>JB Hunt</option><option>DAT</option><option>Truckstop</option><option>TQL</option><option>Dispatch Text</option><option>Other</option>
+        </select></div></div>
+        <div class="field"><label>Broker / Carrier</label><div class="input"><input id="uploadBroker" type="text" placeholder="TQL, Mercer, Landstar..."></div></div>
+
+        <div class="field"><label>Origin</label><div class="input"><input id="uploadOrigin" type="text" placeholder="Keasbey, NJ"></div></div>
+        <div class="field"><label>Destination</label><div class="input"><input id="uploadDestination" type="text" placeholder="Monument, CO"></div></div>
+
+        <div class="field"><label>Loaded miles</label><div class="input"><input id="uploadLoadedMiles" type="number" step="1" placeholder="1846"><span>mi</span></div></div>
+        <div class="field"><label>Deadhead miles</label><div class="input"><input id="uploadDeadheadMiles" type="number" step="1" placeholder="99"><span>mi</span></div></div>
+
+        <div class="field"><label>Gross pay / offered rate</label><div class="input"><span>$</span><input id="uploadGrossPay" type="number" step=".01" placeholder="4900"></div></div>
+        <div class="field"><label>Fuel surcharge</label><div class="input"><span>$</span><input id="uploadFsc" type="number" step=".01" placeholder="0"></div></div>
+
+        <div class="field"><label>Stops</label><div class="input"><input id="uploadStops" type="number" step="1" placeholder="2"></div></div>
+        <div class="field"><label>Weight</label><div class="input"><input id="uploadWeight" type="number" step="1" placeholder="41085"><span>lbs</span></div></div>
+
+        <div class="field"><label>Equipment</label><div class="input"><input id="uploadEquipment" type="text" placeholder="DRY VAN"></div></div>
+        <div class="field"><label>Commodity</label><div class="input"><input id="uploadCommodity" type="text" placeholder="Machinery, cabs, bodies..."></div></div>
+
+        <div class="field"><label>Pickup date/time</label><div class="input"><input id="uploadPickup" type="text" placeholder="Jun 21 00:00"></div></div>
+        <div class="field"><label>Delivery date/time</label><div class="input"><input id="uploadDelivery" type="text" placeholder="Jun 24 00:00"></div></div>
+      </div>
+
+      <div id="uploadValidation" class="warningList"></div>
+      <br>
+      <button class="btn primary" onclick="sendUploadToAnalyze()">Send to Analyze</button>
+      <button class="btn secondary" onclick="clearUploadFields()">Clear Upload Fields</button>
+    </div>
+  </div>
+</section>
+
+<section id="analyze" class="page">
+  <div class="grid2">
+    <div class="card">
+      <h2>Quick Analyze Load</h2>
+      <div class="upload">
+        <strong>Upload screenshot/rate con</strong>
+        <p class="small">Preview only. AI extraction comes later.</p>
+        <input type="file" accept="image/*,.pdf" onchange="previewFile(event)">
+        <img id="filePreview" class="preview"/>
+      </div>
+      <br>
+      <div class="grid2">
+        <div class="field"><label>Origin</label><div class="input"><input id="origin" list="cityOptions" value="Chicago, IL"></div></div>
+        <div class="field"><label>Destination</label><div class="input"><input id="destination" list="cityOptions" value="Atlanta, GA"></div></div>
+        <div class="field"><label>Generate miles</label><button class="btn secondary" onclick="estimateMiles()">Generate Miles</button></div>
+        <div class="field"><label>Average trip speed</label><div class="input"><input id="avgSpeed" type="number" value="45" step="1"><span>mph</span></div></div>
+        <div class="field"><label id="linehaulInputLabel">Linehaul / driver revenue</label><div class="input"><span>$</span><input id="linehaul" type="number" value="2600"></div></div>
+        <div class="field"><label>Fuel surcharge</label><div class="input"><span>$</span><input id="fsc" type="number" value="600"></div></div>
+        <div class="field"><label>Accessorials / bonus</label><div class="input"><span>$</span><input id="accessorials" type="number" value="0"></div></div>
+        <div class="field"><label>Loaded miles</label><div class="input"><input id="loadedMiles" type="number" value="715"><span>mi</span></div></div>
+        <div class="field"><label>Deadhead miles</label><div class="input"><input id="deadheadMiles" type="number" value="95"><span>mi</span></div></div>
+        <div class="field"><label>Trip hours</label><div class="input"><input id="tripHours" type="number" value="18"><span>hr</span></div></div>
+        <div class="field"><label>Tolls / misc.</label><div class="input"><span>$</span><input id="miscCost" type="number" value="125"></div></div>
+        <div class="field"><label>Strategic reason</label><div class="input"><select id="strategy"><option>Normal load</option><option>Gets me home</option><option>Reposition to better market</option><option>Already ahead this week</option></select></div></div>
+      </div>
+      <br>
+      <button class="btn primary" onclick="analyzeLoad(false)">Analyze</button>
+      <button class="btn secondary" onclick="analyzeLoad(true)">Analyze & Save</button>
+    </div>
+    <div class="card">
+      <div id="decisionBox" class="decision">
+        <h2 id="decision">TAKE</h2>
+        <p id="decisionReason" class="small">Enter load information and hit Analyze.</p>
+        <p><span id="loadStrength" class="badge strong">Strong</span></p>
+        <p id="deadheadWarning" class="small"></p>
+      </div>
+      <br>
+      <div class="grid2">
+        <div class="card metric"><span id="resGrossLabel">Entered revenue</span><strong id="resGross">$0</strong></div>
+        <div class="card metric"><span>Revenue to truck</span><strong id="resTruck">$0</strong></div>
+        <div class="card metric big"><span>Estimated net</span><strong id="resNet">$0</strong></div>
+        <div class="card metric"><span>Profit / hour</span><strong id="resHour">$0/hr</strong></div>
+        <div class="card metric"><span>Driver all-mile RPM</span><strong id="resDriverRpm">$0</strong></div>
+        <div class="card metric"><span>Deadhead %</span><strong id="resDh">0%</strong></div>
+      </div>
+      <br>
+      <div class="card">
+        <h3>Load Breakdown Estimates</h3>
+        <p class="small">Based on your operation profile and current assumptions. Actual settlement and expenses may vary.</p>
+        <table><tbody>
+          <tr><td>Gross load pay</td><td id="bdGross">$0</td></tr>
+          <tr><td>Company deduction</td><td id="bdCarrierCut">$0</td></tr>
+          <tr><td>Revenue to truck</td><td id="bdTruck">$0</td></tr>
+          <tr><td>Fuel + DEF</td><td id="bdFuel">$0</td></tr><tr><td>Fuel source</td><td id="bdFuelSource">Estimated</td></tr>
+          <tr><td>Maintenance reserve contribution</td><td id="bdMaint">$0</td></tr>
+          <tr><td>Misc / tolls / lumpers</td><td id="bdMisc">$0</td></tr>
+          <tr><td>Fixed cost allocation</td><td id="bdFixed">$0</td></tr>
+          <tr><td>Pre-tax profit</td><td id="bdPreTax">$0</td></tr>
+          <tr><td>Tax reserve</td><td id="bdTax">$0</td></tr>
+          <tr><td><strong>Estimated net after buckets</strong></td><td><strong id="bdAvailable">$0</strong></td></tr>
+        </tbody></table>
+      </div>
+      <br>
+      <div class="card">
+        <h3>Reserve Impact</h3>
+        <table><tbody>
+          <tr><td>Maintenance current balance</td><td id="bdMaintCurrent">$0</td></tr>
+          <tr><td>This load adds</td><td id="bdMaintAdds">$0</td></tr>
+          <tr><td>Projected maintenance balance</td><td id="bdMaintProjected">$0</td></tr>
+          <tr><td>Remaining to maintenance goal</td><td id="bdMaintRemaining">$0</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fuel" class="page">
+  <div class="card">
+    <h2>⛽ Fuel Log</h2>
+    <p class="small">Fuel has one home now. Enter the raw numbers and Copilot calculates the rest. Upload receipt is placeholder for future AI extraction.</p>
+    <div class="grid2">
+      <div class="field"><label>Analyzer fuel mode</label><div class="input"><select id="fuelCalcMode"><option value="estimated">Use estimated fuel from miles</option><option value="actual">Use actual fuel entries total</option></select></div></div>
+      <div class="field"><label>Estimated fuel price if no entries</label><div class="input"><span>$</span><input id="defaultFuelPrice" type="number" value="4.00" step=".01"><span>/gal</span></div></div>
+    </div>
+    <br>
+    <div class="upload">
+      <strong>Upload fuel receipt</strong>
+      <p class="small">Future: AI reads gallons, pump price, discount, DEF, total, state, and truck stop.</p>
+      <input type="file" accept="image/*,.pdf" onchange="previewFuelReceipt(event)">
+      <img id="fuelPreview" class="preview"/>
+    </div>
+    <br>
+    <div class="grid3">
+      <div class="field"><label>Date</label><div class="input"><input id="fuelDate" type="date"></div></div>
+      <div class="field"><label>Truck stop</label><div class="input"><input id="fuelStop" value="Love's"></div></div>
+      <div class="field"><label>State</label><div class="input"><input id="fuelState" value="OH" maxlength="2"></div></div>
+      <div class="field"><label>Diesel gallons</label><div class="input"><input id="fuelGallons" type="number" value="100" step=".01"><span>gal</span></div></div>
+      <div class="field"><label>Pump price</label><div class="input"><span>$</span><input id="fuelPump" type="number" value="4.50" step=".01"><span>/gal</span></div></div>
+      <div class="field"><label>Discount</label><div class="input"><span>-$</span><input id="fuelDisc" type="number" value=".50" step=".01"><span>/gal</span></div></div>
+      <div class="field"><label>Actual price</label><div class="input"><span>$</span><input id="fuelActual" type="number" value="4.00" step=".01" readonly><span>/gal</span></div></div>
+      <div class="field"><label>Diesel total after discount</label><div class="input"><span>$</span><input id="fuelTotal" type="number" value="400" readonly></div></div>
+      <div class="field"><label>DEF gallons</label><div class="input"><input id="defGallons" type="number" value="0" step=".01"><span>gal</span></div></div>
+      <div class="field"><label>DEF price</label><div class="input"><span>$</span><input id="defPrice" type="number" value="0" step=".01"><span>/gal</span></div></div>
+      <div class="field"><label>DEF total</label><div class="input"><span>$</span><input id="defCost" type="number" value="0" step=".01" readonly></div></div>
+      <div class="field"><label>Total fuel + DEF after discount</label><div class="input"><span>$</span><input id="fuelGrandTotal" type="number" value="400" readonly></div></div>
+      <div class="field"><label>Odometer / miles this fill</label><div class="input"><input id="fuelMiles" type="number" value="0"><span>mi</span></div></div>
+      <div class="field"><label>Fuel cost per mile</label><div class="input"><span>$</span><input id="fuelCpm" type="number" value="0" readonly><span>/mi</span></div></div>
+    </div>
+    <br>
+    <button class="btn primary" onclick="saveFuel()">Save Fuel Entry</button> <button class="btn secondary" onclick="clearFuelEntries()">Clear All Fuel Entries</button>
+  </div>
+  <br>
+  <div class="grid4">
+    <div class="card metric"><span>Weekly gallons</span><strong id="fuelWeekGallons">0</strong></div>
+    <div class="card metric"><span>Fuel + DEF after discount</span><strong id="fuelWeekTotal">$0</strong></div>
+    <div class="card metric"><span>Avg diesel actual price</span><strong id="fuelAvgPrice">$0</strong></div>
+    <div class="card metric"><span>Fuel entries</span><strong id="fuelEntryCount">0</strong></div>
+  </div>
+  <br>
+  <div class="card">
+    <h3>Saved Fuel Entries</h3>
+    <table><thead><tr><th>Date</th><th>Stop</th><th>State</th><th>Diesel Gal</th><th>Actual</th><th>DEF Gal</th><th>Total</th><th>Actions</th></tr></thead><tbody id="fuelRows"></tbody></table>
+  </div>
+</section>
+
+
+<section id="history" class="page">
+  <div class="card">
+    <h2>📋 Load History</h2>
+    <p class="small">Every saved load keeps an audit trail so you can see exactly what was entered and why Copilot gave the answer.</p>
+    <button class="btn secondary" onclick="clearLoads()">Clear All Loads</button>
+  </div>
+  <br>
+  <div class="card">
+    <h3>Saved Loads</h3>
+    <table>
+      <thead><tr><th>Date</th><th>Lane</th><th>Gross</th><th>Net</th><th>Decision</th><th>Strength</th><th>Actions</th></tr></thead>
+      <tbody id="historyRows"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="review" class="page">
+  <div class="card">
+    <h2>🚛 Weekly Review Breakdown</h2>
+    <p class="small">Dashboard gives the answer. Weekly Review explains the answer. This view is scoped to the last 7 days.</p>
+    <button class="btn primary" onclick="closeOutWeek()">Close Out Week</button>
+    <div class="grid4">
+      <div class="card metric"><span>Loads saved</span><strong id="wkLoads">0</strong></div>
+      <div class="card metric"><span>Total miles</span><strong id="wkMiles">0</strong></div>
+      <div class="card metric"><span>Avg profit/hour</span><strong id="wkAvgHour">$0/hr</strong></div>
+      <div class="card metric"><span>Avg deadhead</span><strong id="wkAvgDh">0%</strong></div>
+    </div>
+  </div>
+  <br>
+  <div class="grid2">
+    <div class="card">
+      <h3>💰 Money In</h3>
+      <table><tbody>
+        <tr><td>Gross revenue</td><td id="wkGross">$0</td></tr>
+        <tr><td>Company deduction</td><td id="wkCompanyDeduct">$0</td></tr>
+        <tr><td><strong>Revenue to truck</strong></td><td><strong id="wkTruck">$0</strong></td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <h3>🚛 Operating Expenses</h3>
+      <table><tbody>
+        <tr><td>Fuel + DEF</td><td id="wkFuel">$0</td></tr>
+        <tr><td>Maintenance reserve</td><td id="wkMaint">$0</td></tr>
+        <tr><td>Misc / tolls / lumpers</td><td id="wkMisc">$0</td></tr>
+        <tr><td>Fixed cost allocation</td><td id="wkFixed">$0</td></tr>
+        <tr><td><strong>Pre-tax profit</strong></td><td><strong id="wkPreTax">$0</strong></td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <h3>🪣 Reserve Buckets</h3>
+      <table><tbody>
+        <tr><td>Tax reserve</td><td id="wkTax">$0</td></tr>
+        <tr><td><strong>Available profit</strong></td><td><strong id="wkNet">$0</strong></td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <h3>👤 Owner Pay</h3>
+      <table><tbody>
+        <tr><td>Planned draw</td><td id="wkDraw">$0</td></tr>
+        <tr><td><strong>Remaining business cash</strong></td><td><strong id="wkRemainCash">$0</strong></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <h3>🛠 Maintenance Fund Progress</h3>
+    <table><tbody>
+      <tr><td>Starting balance</td><td id="wkMaintStart">$0</td></tr>
+      <tr><td>Added this week</td><td id="wkMaintAdded">$0</td></tr>
+      <tr><td>Projected balance</td><td id="wkMaintEnd">$0</td></tr>
+      <tr><td>Goal</td><td id="wkMaintGoal">$0</td></tr>
+      <tr><td>Remaining</td><td id="wkMaintRemain">$0</td></tr>
+    </tbody></table>
+  </div>
+  <br>
+  <div class="card">
+    <h3>Saved Loads - Last 7 Days</h3>
+    <table><thead><tr><th>Lane</th><th>Gross</th><th>Truck</th><th>Net</th><th>Profit/hr</th><th>DH%</th></tr></thead><tbody id="wkLoadRows"></tbody></table>
+  </div>
+  <br>
+  <div class="card">
+    <h3>Closed Weeks</h3>
+    <table><thead><tr><th>Closed</th><th>Loads</th><th>Gross</th><th>Truck</th><th>Fuel</th><th>Net</th></tr></thead><tbody id="closedWeekRows"></tbody></table>
+  </div>
+</section>
+
+<section id="settlements" class="page">
+  <div class="card">
+    <h2>Settlement Logs</h2>
+    <p class="small">Upload workflow only for now. True AI extraction comes later.</p>
+    <div class="upload"><input type="file" accept="image/*,.pdf" onchange="settlementPicked(event)"><p id="settlementFile" class="small"></p></div>
+    <br>
+    <div class="grid3">
+      <div class="field"><label>Settlement gross</label><div class="input"><span>$</span><input id="settleGross" type="number" value="0"></div></div>
+      <div class="field"><label>Settlement net</label><div class="input"><span>$</span><input id="settleNet" type="number" value="0"></div></div>
+      <div class="field"><label>Fuel shown</label><div class="input"><span>$</span><input id="settleFuel" type="number" value="0"></div></div>
+    </div>
+    <br><button class="btn primary" onclick="saveSettlement()">Save Settlement</button>
+  </div>
+  <br>
+  <div class="card"><h3>Saved settlements</h3><table><thead><tr><th>Date</th><th>File</th><th>Gross</th><th>Net</th><th>Fuel</th></tr></thead><tbody id="settleTable"></tbody></table></div>
+</section>
+
+<section id="reality" class="page">
+  <div class="card">
+    <h2>🚛 V11.5 Reality Update</h2>
+    <p class="small">Built from real settlements, not assumptions. Current library: Mercer, Landstar, F2F, JB Hunt.</p>
+    <div class="grid4">
+      <div class="card metric"><span>Mercer</span><strong>Linehaul only</strong><span class="small">FSC estimated before settlement.</span></div>
+      <div class="card metric"><span>Landstar</span><strong>Linehaul only</strong><span class="small">FSC known at booking.</span></div>
+      <div class="card metric"><span>JB Hunt</span><strong>Linehaul only</strong><span class="small">FSC separate earnings line.</span></div>
+      <div class="card metric"><span>F2F</span><strong>Whole order</strong><span class="small">Driver percent applies to full order.</span></div>
+    </div>
+  </div>
+  <br>
+  <div class="grid2">
+    <div class="card">
+      <h3>Carrier Revenue Model</h3>
+      <table>
+        <tbody>
+          <tr><td>revenueInputBasis</td><td>driver_revenue means do not subtract carrier cut again</td></tr>
+          <tr><td>linehaulDriverPercent</td><td>Used only when broker/customer gross is entered and cut applies to linehaul only</td></tr>
+          <tr><td>orderDriverPercent</td><td>Used only when cut applies to whole order</td></tr>
+          <tr><td>fscDriverPercent</td><td>Used only when FSC is separated from linehaul</td></tr>
+          <tr><td>cutAppliesTo</td><td>linehaul_only or whole_order</td></tr>
+          <tr><td>fscKnownAtBooking</td><td>Flags whether FSC is actual or estimated</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Settlement Intelligence</h3>
+      <p class="small">No mandatory upload count. The more settlements uploaded, the smarter Copilot becomes.</p>
+      <p class="small">Until enough driver-specific data exists, Copilot uses carrier defaults and estimates.</p>
+      <p class="small"><strong>Guiding rule:</strong> Build awareness, not perfection.</p>
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <h3>Core Discovery</h3>
+    <p class="small"><strong>Deposit does not equal profit.</strong> Every carrier confirmed this. Copilot's job is to translate settlements into clarity.</p>
+  </div>
+</section>
+
+</main>
+
+<datalist id="cityOptions">
+<option value="Atlanta, GA"><option value="Chicago, IL"><option value="Dallas, TX"><option value="Houston, TX"><option value="Charlotte, NC"><option value="Nashville, TN"><option value="Memphis, TN"><option value="Indianapolis, IN"><option value="Columbus, OH"><option value="Cleveland, OH"><option value="Louisville, KY"><option value="Jacksonville, FL"><option value="Miami, FL"><option value="Orlando, FL"><option value="Tampa, FL"><option value="Richmond, VA"><option value="Harrisburg, PA"><option value="Allentown, PA"><option value="Philadelphia, PA"><option value="Hartford, CT"><option value="Windsor, CT"><option value="Wallingford, CT"><option value="Boston, MA"><option value="Baltimore, MD"><option value="Newark, NJ"><option value="Kansas City, MO"><option value="St. Louis, MO"><option value="Denver, CO"><option value="Phoenix, AZ"><option value="Los Angeles, CA"><option value="Reno, NV"><option value="Salt Lake City, UT">
+</datalist>
+<div id="toast" class="toast">Saved ✅</div>
+<button class="fab" onclick="showPage('analyze')">Analyze Load</button>
+
+<div id="modalBackdrop" class="modalBackdrop">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+      <h2 id="modalTitle">Details</h2>
+      <button class="btn secondary" onclick="closeModal()">Close</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<footer class="container">Prototype only. Calculations are estimates. Driver has final decision. Copilot, not autopilot.</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const money = (n) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(Number(n)||0);
+const money2 = (n) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(Number(n)||0);
+const val = (id) => {
+  const n = Number($(id)?.value) || 0;
+  return Math.max(0, n);
+};
+
+let loads = JSON.parse(localStorage.getItem("ooc_v11_loads") || "[]");
+let settlements = JSON.parse(localStorage.getItem("ooc_v11_settlements") || "[]");
+let fuelEntries = JSON.parse(localStorage.getItem("ooc_v11_fuel") || "[]");
+let currentSettlementFile = "";
+let editingFuelIndex = null;
+let editingLoadIndex = null;
+let closedWeeks = JSON.parse(localStorage.getItem("ooc_v12_closed_weeks") || "[]");
+
+const cityCoords = {
+ "Atlanta, GA":[33.7490,-84.3880],"Chicago, IL":[41.8781,-87.6298],"Dallas, TX":[32.7767,-96.7970],"Houston, TX":[29.7604,-95.3698],
+ "Charlotte, NC":[35.2271,-80.8431],"Nashville, TN":[36.1627,-86.7816],"Memphis, TN":[35.1495,-90.0490],"Indianapolis, IN":[39.7684,-86.1581],
+ "Columbus, OH":[39.9612,-82.9988],"Cleveland, OH":[41.4993,-81.6944],"Louisville, KY":[38.2527,-85.7585],"Jacksonville, FL":[30.3322,-81.6557],
+ "Miami, FL":[25.7617,-80.1918],"Orlando, FL":[28.5383,-81.3792],"Tampa, FL":[27.9506,-82.4572],"Richmond, VA":[37.5407,-77.4360],
+ "Harrisburg, PA":[40.2732,-76.8867],"Allentown, PA":[40.6023,-75.4714],"Philadelphia, PA":[39.9526,-75.1652],"Hartford, CT":[41.7658,-72.6734],
+ "Windsor, CT":[41.8526,-72.6437],"Wallingford, CT":[41.4570,-72.8232],"Boston, MA":[42.3601,-71.0589],"Baltimore, MD":[39.2904,-76.6122],
+ "Newark, NJ":[40.7357,-74.1724],"Kansas City, MO":[39.0997,-94.5786],"St. Louis, MO":[38.6270,-90.1994],"Denver, CO":[39.7392,-104.9903],
+ "Phoenix, AZ":[33.4484,-112.0740],"Los Angeles, CA":[34.0522,-118.2437],"Reno, NV":[39.5296,-119.8138],"Salt Lake City, UT":[40.7608,-111.8910]
+};
+
+function showToast(message="Saved ✅"){ const t=$("toast"); if(!t) return; t.textContent=message; t.classList.add("show"); clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>t.classList.remove("show"),1200); }
+
+function freqToWeekly(amount, freq){
+  if(freq === "Paid Off") return 0;
+  const a = Number(amount)||0;
+  if(freq === "Weekly") return a;
+  if(freq === "Biweekly") return a/2;
+  if(freq === "Monthly") return a/4.33;
+  if(freq === "Quarterly") return a/13;
+  if(freq === "Annual") return a/52;
+  return a/4.33;
+}
+
+function saveProfile(){
+  const ids = ["opType","carrier","trailer","mpg","cutAppliesTo","revenueInputBasis","linehaulDriverPercent","orderDriverPercent","fscDriverPercent","fscKnownAtBooking","fscEstimateNote","carrierConfidence",
+  "truckPay","truckPayFreq","insurance","insuranceFreq","maintPerMile",
+  "trailerPay","trailerPayFreq","trailerIns","trailerInsFreq","trailerReg","trailerRegFreq",
+  "eld","eldFreq","plates","platesFreq","otherFixed","otherFixedFreq",
+  "houseIncluded","housing","utilities","carPayment","carInsurance","creditCards","personalBills","otherHousehold",
+  "weeklyGoal","minProfitHour","plannedDraw","taxPct","maintenanceGoal","maintenanceCurrent","emergencyGoal","emergencyCurrent","avgSpeed","fuelCalcMode","defaultFuelPrice"];
+  const p = {};
+  ids.forEach(id => { if($(id)) p[id] = $(id).value; });
+  p.lastSaved = new Date().toLocaleDateString();
+  localStorage.setItem("ooc_v11_profile", JSON.stringify(p));
+  updateCarrierLabels();
+  updateDashboard();
+}
+
+function loadProfile(){
+  const p = JSON.parse(localStorage.getItem("ooc_v11_profile") || "{}");
+  Object.keys(p).forEach(id => { if($(id)) $(id).value = p[id]; });
+  if(p.lastSaved && $("lastUpdated")) $("lastUpdated").textContent = p.lastSaved;
+}
+
+function carrierDefaults(){
+  const c = $("carrier")?.value;
+  if(c === "Mercer"){
+    $("cutAppliesTo").value = "linehaul_only";
+    $("revenueInputBasis").value = "driver_revenue";
+    $("linehaulDriverPercent").value = 75;
+    $("orderDriverPercent").value = 75;
+    $("fscDriverPercent").value = 100;
+    $("fscKnownAtBooking").value = "false";
+    $("fscEstimateNote").value = "Mercer FSC often unknown until settlement.";
+  }
+  if(c === "Landstar"){
+    $("cutAppliesTo").value = "linehaul_only";
+    $("revenueInputBasis").value = "broker_gross";
+    $("linehaulDriverPercent").value = 65;
+    $("orderDriverPercent").value = 65;
+    $("fscDriverPercent").value = 100;
+    $("fscKnownAtBooking").value = "true";
+    $("fscEstimateNote").value = "Landstar FSC usually known at booking.";
+  }
+  if(c === "F2F"){
+    $("cutAppliesTo").value = "whole_order";
+    $("revenueInputBasis").value = "broker_gross";
+    $("linehaulDriverPercent").value = 80;
+    $("orderDriverPercent").value = 80;
+    $("fscDriverPercent").value = 80;
+    $("fscKnownAtBooking").value = "true";
+    $("fscEstimateNote").value = "F2F percent applies to full order.";
+  }
+  if(c === "JB Hunt"){
+    $("cutAppliesTo").value = "linehaul_only";
+    $("revenueInputBasis").value = "driver_revenue";
+    $("linehaulDriverPercent").value = 100;
+    $("orderDriverPercent").value = 100;
+    $("fscDriverPercent").value = 100;
+    $("fscKnownAtBooking").value = "true";
+    $("fscEstimateNote").value = "JB Hunt settlements show FSC as separate earnings line.";
+  }
+  if(c === "Own Authority"){
+    $("opType").value = "Own Authority";
+    $("cutAppliesTo").value = "whole_order";
+    $("revenueInputBasis").value = "driver_revenue";
+    $("linehaulDriverPercent").value = 100;
+    $("orderDriverPercent").value = 100;
+    $("fscDriverPercent").value = 100;
+    $("fscKnownAtBooking").value = "true";
+    $("fscEstimateNote").value = "Own authority uses actual customer/broker revenue.";
+  }
+  updateCarrierLabels();
+}
+
+function updateCarrierLabels(){
+  const wholeOrder = $("cutAppliesTo").value === "whole_order";
+  if($("carrierModelLabel")){
+    $("carrierModelLabel").textContent = wholeOrder ? "Whole order" : "Linehaul only";
+  }
+  if($("fscStatusLabel")){
+    $("fscStatusLabel").textContent = $("fscKnownAtBooking").value === "true" ? "Known" : "Estimated";
+  }
+
+  if($("linehaulPercentField")) $("linehaulPercentField").style.display = wholeOrder ? "none" : "grid";
+  if($("fscPercentField")) $("fscPercentField").style.display = wholeOrder ? "none" : "grid";
+  if($("orderPercentField")) $("orderPercentField").style.display = wholeOrder ? "grid" : "none";
+
+  if($("linehaulInputLabel") && $("revenueInputBasis")){
+    $("linehaulInputLabel").textContent = $("revenueInputBasis").value === "driver_revenue"
+      ? "Driver revenue / settlement-style amount"
+      : "Broker/customer gross linehaul";
+  }
+
+  const note = $("fscEstimateNote");
+  if(note && wholeOrder){
+    note.value = note.value || "Whole-order mode uses one flat order percent.";
+  }
+}
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  $(page).classList.add("active");
+  $("tab-"+page).classList.add("active");
+  updateDashboard();
+  if(page === "analyze") analyzeLoad(false);
+}
+
+function updateTripHours(){
+  const miles = val("loadedMiles") + val("deadheadMiles");
+  const speed = val("avgSpeed") || 45;
+  if($("tripHours")) $("tripHours").value = (miles / Math.max(speed,1)).toFixed(1);
+}
+
+function haversine(a,b){
+ const R=3958.8, rad=d=>d*Math.PI/180;
+ const dLat=rad(b[0]-a[0]), dLon=rad(b[1]-a[1]);
+ const lat1=rad(a[0]), lat2=rad(b[0]);
+ const x=Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(x));
+}
+function estimateMiles(){
+ const o=$("origin").value.trim(), d=$("destination").value.trim();
+ if(!cityCoords[o] || !cityCoords[d]){ alert("Starter mileage only works for cities in the dropdown. Enter miles manually for now."); return; }
+ const road = Math.round(haversine(cityCoords[o], cityCoords[d]) * 1.18);
+ $("loadedMiles").value = road;
+ updateTripHours();
+ analyzeLoad(false);
+}
+
+
+function loadTime(l){
+  const raw = l.savedAt || l.date;
+  const t = new Date(raw).getTime();
+  return Number.isNaN(t) ? Date.now() : t;
+}
+function loadsInRange(days = 7){
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return loads.filter(l => loadTime(l) >= cutoff);
+}
+function fuelEntriesInRange(days = 7){
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return fuelEntries.filter(f => {
+    const t = new Date(f.date).getTime();
+    return !Number.isNaN(t) && t >= cutoff;
+  });
+}
+function weeklyFuelTotal(){
+  return fuelEntriesInRange(7).reduce((a,b)=>a+b.total,0);
+}
+function weeklyFuelGallons(){
+  return fuelEntriesInRange(7).reduce((a,b)=>a+b.gallons,0);
+}
+function averageFuelPrice(){
+  const entries = fuelEntriesInRange(7);
+  const gallons = entries.reduce((a,b)=>a+b.gallons,0);
+  const dieselTotal = entries.reduce((a,b)=>a+b.dieselTotal,0);
+  return gallons ? dieselTotal/gallons : 0;
+}
+function currentFuelPrice(){
+  return averageFuelPrice() || val("defaultFuelPrice") || 4.00;
+}
+function actualFuelEntriesTotal(){ return weeklyFuelTotal(); }
+function actualFuelEntriesDefTotal(){ return fuelEntriesInRange(7).reduce((a,b)=>a+b.defCost,0); }
+function actualFuelEntriesDieselTotal(){ return fuelEntriesInRange(7).reduce((a,b)=>a+b.dieselTotal,0); }
+function currentDefEstimatePerDay(){
+  const entries = fuelEntriesInRange(7);
+  const totalDef = entries.reduce((a,b)=>a+b.defCost,0);
+  return entries.length ? totalDef/Math.max(entries.length,1) : 0;
+}
+
+function fixedWeekly(){
+ const business =
+  freqToWeekly(val("truckPay"), $("truckPayFreq").value) +
+  freqToWeekly(val("insurance"), $("insuranceFreq").value) +
+  freqToWeekly(val("trailerPay"), $("trailerPayFreq").value) +
+  freqToWeekly(val("trailerIns"), $("trailerInsFreq").value) +
+  freqToWeekly(val("trailerReg"), $("trailerRegFreq").value) +
+  freqToWeekly(val("eld"), $("eldFreq").value) +
+  freqToWeekly(val("plates"), $("platesFreq").value) +
+  freqToWeekly(val("otherFixed"), $("otherFixedFreq").value);
+ const householdMonthly = $("houseIncluded").value === "yes" ? val("housing")+val("utilities")+val("carPayment")+val("carInsurance")+val("creditCards")+val("personalBills")+val("otherHousehold") : 0;
+ return business + householdMonthly/4.33;
+}
+
+function calculateLoad(){
+ const linehaul=val("linehaul"), fsc=val("fsc"), access=val("accessorials");
+ const gross=linehaul+fsc+access;
+ const totalMiles=val("loadedMiles")+val("deadheadMiles");
+ let revenueTruck = 0;
+ const linehaulDriverPct = val("linehaulDriverPercent")/100;
+ const orderDriverPct = val("orderDriverPercent")/100;
+ const fscDriverPct = val("fscDriverPercent")/100;
+ const inputAlreadyDriverRevenue = $("revenueInputBasis") && $("revenueInputBasis").value === "driver_revenue";
+
+ if(inputAlreadyDriverRevenue){
+   revenueTruck = gross;
+ } else if($("cutAppliesTo").value === "whole_order"){
+   revenueTruck = gross * orderDriverPct;
+ } else {
+   revenueTruck = (linehaul * linehaulDriverPct) + (fsc * fscDriverPct) + access;
+ }
+
+ const carrierCutDollars = inputAlreadyDriverRevenue ? 0 : (gross - revenueTruck);
+ const fuelPrice = currentFuelPrice();
+ let fuelOnly = (totalMiles / Math.max(val("mpg"), .1)) * fuelPrice;
+ let def = currentDefEstimatePerDay();
+ let fuelSource = "estimated";
+ if($("fuelCalcMode") && $("fuelCalcMode").value === "actual" && fuelEntriesInRange(7).length){
+   const periodFuel = fuelEntriesInRange(7);
+   const loadsThisPeriod = Math.max(loads.length, 1);
+   fuelOnly = periodFuel.reduce((a,b)=>a+b.dieselTotal,0) / loadsThisPeriod;
+   def = periodFuel.reduce((a,b)=>a+b.defCost,0) / loadsThisPeriod;
+   fuelSource = `actual fuel entries / ${loadsThisPeriod} load(s)`;
+ }
+ const fuel = fuelOnly + def;
+ const maint = totalMiles * val("maintPerMile");
+ const fixedAllocation = fixedWeekly() / 5;
+ const misc = val("miscCost");
+ const beforeTax = revenueTruck - fuel - maint - misc - fixedAllocation;
+ const tax = Math.max(0, beforeTax * (val("taxPct")/100));
+ const net = beforeTax - tax;
+ const profitHour = net / Math.max(val("tripHours"),1);
+ const brokerRpm = gross / Math.max(totalMiles,1);
+ const driverRpm = revenueTruck / Math.max(totalMiles,1);
+ const dhPct = (val("deadheadMiles") / Math.max(totalMiles,1)) * 100;
+ const maintProjected = val("maintenanceCurrent") + maint;
+ const maintRemaining = Math.max(0, val("maintenanceGoal") - maintProjected);
+ return {date:new Date().toLocaleDateString(), origin:$("origin").value, destination:$("destination").value,
+   gross,revenueTruck,carrierCutDollars,net,profitHour,brokerRpm,driverRpm,fuel,maint,misc,fixedAllocation,tax,beforeTax,fuelSource,
+   dhPct,totalMiles,tripHours:val("tripHours"),strategy:$("strategy").value,
+   maintCurrent:val("maintenanceCurrent"),maintProjected,maintRemaining};
+}
+
+function stoplight(score){
+  if(score >= 8) return {class:"green", label:"Healthy"};
+  if(score >= 5) return {class:"yellow", label:"Attention"};
+  return {class:"red", label:"Problem"};
+}
+
+
+function getLoadStrength(r, decision){
+  const minHour = val("minProfitHour") || 40;
+
+  if(decision === "PASS"){
+    if(r.net < 0) return {label:"Avoid", cls:"weak"};
+    return {label:"Weak", cls:"weak"};
+  }
+
+  if(decision === "NEGOTIATE"){
+    if(r.profitHour >= minHour * 0.85) return {label:"Close", cls:"borderline"};
+    return {label:"Needs More Money", cls:"borderline"};
+  }
+
+  // TAKE strength labels
+  if(r.net >= 10000 || r.profitHour >= 200 || r.driverRpm >= 6) return {label:"Elite Opportunity", cls:"elite"};
+  if(r.profitHour >= minHour * 1.5 && r.driverRpm >= 2.25) return {label:"Strong", cls:"elite"};
+  return {label:"Meets Target", cls:"strong"};
+}
+function analyzeLoad(save){
+ saveProfile();
+ const r = calculateLoad();
+ const inputAlreadyDriverRevenue = $("revenueInputBasis") && $("revenueInputBasis").value === "driver_revenue";
+ $("resGross").textContent = money(r.gross);
+ $("resGrossLabel").textContent = inputAlreadyDriverRevenue ? "Entered driver revenue" : "Broker gross";
+ $("resTruck").textContent = money(r.revenueTruck);
+ $("resNet").textContent = money(r.net);
+ $("resHour").textContent = money(r.profitHour)+"/hr";
+ $("resDriverRpm").textContent = money2(r.driverRpm);
+ $("resDh").textContent = r.dhPct.toFixed(1)+"%";
+
+ $("bdGross").textContent = money(r.gross);
+ $("bdCarrierCut").textContent = money(r.carrierCutDollars);
+ $("bdTruck").textContent = money(r.revenueTruck);
+ $("bdFuel").textContent = money(r.fuel);
+ $("bdFuelSource").textContent = r.fuelSource;
+ $("bdMaint").textContent = money(r.maint);
+ $("bdMisc").textContent = money(r.misc);
+ $("bdFixed").textContent = money(r.fixedAllocation);
+ $("bdPreTax").textContent = money(r.beforeTax);
+ $("bdTax").textContent = money(r.tax);
+ $("bdAvailable").textContent = money(r.net);
+ $("bdMaintCurrent").textContent = money(r.maintCurrent);
+ $("bdMaintAdds").textContent = money(r.maint);
+ $("bdMaintProjected").textContent = money(r.maintProjected);
+ $("bdMaintRemaining").textContent = money(r.maintRemaining);
+
+ let decision="TAKE", cls="decision", reason="This load meets or beats your minimum profit/hour based on your operation profile.";
+ const strategic = r.strategy !== "Normal load";
+ const minHour = val("minProfitHour") || 40;
+ const deadheadWarning = r.dhPct > 35;
+
+ if(r.net < 0 || r.profitHour < minHour * 0.5 || r.gross < 500){
+   decision="PASS"; cls="decision bad"; reason="This load does not clear your current operation assumptions.";
+ } else if(r.profitHour >= minHour){
+   decision="TAKE"; cls="decision"; reason="This load meets or beats your minimum profit/hour based on your operation profile.";
+ } else {
+   decision="NEGOTIATE"; cls="decision warn"; reason="This load is below your minimum profit/hour. Try for more money or make sure the next move makes sense.";
+ }
+ if(strategic && decision==="PASS"){
+   decision="NEGOTIATE"; cls="decision warn"; reason="Strategic reason detected. It may make sense as a reposition/get-home move, but track how often this happens.";
+ } else if(strategic && decision==="TAKE"){ reason="This load clears your numbers and has a strategic reason. Still track the pattern over time."; }
+ if($("fscKnownAtBooking").value === "false"){
+   reason += " ⚠️ FSC is estimated for this carrier until settlement confirms it.";
+ }
+
+  const strength = getLoadStrength(r, decision);
+ $("decision").textContent = decision;
+ $("decisionBox").className = cls;
+ $("decisionReason").textContent = reason;
+ $("deadheadWarning").textContent = deadheadWarning ? `⚠️ High deadhead: ${r.dhPct.toFixed(1)}%` : "";
+ $("loadStrength").textContent = strength.label;
+ $("loadStrength").className = "badge " + strength.cls;
+
+ r.decision = decision;
+ r.decisionReason = reason;
+ r.strength = strength.label;
+ r.strengthClass = strength.cls;
+ r.deadheadWarning = deadheadWarning;
+ r.savedAt = new Date().toLocaleString();
+ r.uploadContext = window.lastUploadContext || null;
+ r.inputs = {
+   linehaul: val("linehaul"), fsc: val("fsc"), accessorials: val("accessorials"),
+   loadedMiles: val("loadedMiles"), deadheadMiles: val("deadheadMiles"), tripHours: val("tripHours"),
+   miscCost: val("miscCost"), avgSpeed: val("avgSpeed"), mpg: val("mpg"),
+   carrier: $("carrier").value, cutAppliesTo: $("cutAppliesTo").value, revenueInputBasis: $("revenueInputBasis").value,
+   linehaulDriverPercent: val("linehaulDriverPercent"), orderDriverPercent: val("orderDriverPercent"),
+   fscDriverPercent: val("fscDriverPercent"), fscKnownAtBooking: $("fscKnownAtBooking").value
+ };
+
+ if(save){
+   if(editingLoadIndex !== null){
+     loads[editingLoadIndex] = r;
+     editingLoadIndex = null;
+     showToast("Load updated ✅");
+   } else {
+     loads.push(r);
+     showToast("Load saved ✅");
+   }
+   localStorage.setItem("ooc_v11_loads", JSON.stringify(loads));
+   updateDashboard();
+ }
+}
+
+function updateFuelCalc(){
+  const actual = Math.max(0, val("fuelPump") - val("fuelDisc"));
+  $("fuelActual").value = actual.toFixed(2);
+  const dieselTotal = actual * val("fuelGallons");
+  $("fuelTotal").value = dieselTotal.toFixed(2);
+  const defTotal = val("defGallons") * val("defPrice");
+  $("defCost").value = defTotal.toFixed(2);
+  const grand = dieselTotal + defTotal;
+  $("fuelGrandTotal").value = grand.toFixed(2);
+  const cpm = val("fuelMiles") ? grand/val("fuelMiles") : 0;
+  $("fuelCpm").value = cpm.toFixed(2);
+}
+function saveFuel(){
+  updateFuelCalc();
+  const entry = {date:$("fuelDate").value || new Date().toISOString().slice(0,10), stop:$("fuelStop").value, state:$("fuelState").value,
+    gallons:val("fuelGallons"), pump:val("fuelPump"), discount:val("fuelDisc"), actual:val("fuelActual"), dieselTotal:val("fuelTotal"), defGallons:val("defGallons"), defPrice:val("defPrice"), defCost:val("defCost"), total:val("fuelGrandTotal"), miles:val("fuelMiles")};
+  if(editingFuelIndex !== null){
+    fuelEntries[editingFuelIndex] = entry;
+    editingFuelIndex = null;
+    showToast("Fuel updated ✅");
+  } else {
+    fuelEntries.push(entry);
+    showToast("Fuel saved ✅");
+  }
+  localStorage.setItem("ooc_v11_fuel", JSON.stringify(fuelEntries));
+  renderFuel();
+  updateDashboard();
+}
+function renderFuel(){
+  if($("fuelWeekGallons")){
+    const gallons=weeklyFuelGallons(), total=weeklyFuelTotal(), avg=averageFuelPrice();
+    $("fuelWeekGallons").textContent=gallons.toFixed(1);
+    $("fuelWeekTotal").textContent=money(total);
+    $("fuelAvgPrice").textContent=money2(avg);
+    $("fuelEntryCount").textContent=fuelEntries.length;
+    $("fuelRows").innerHTML = fuelEntries.length ? fuelEntries.map((f,i)=>`<tr><td>${f.date}</td><td>${f.stop}</td><td>${f.state}</td><td>${f.gallons.toFixed(1)}</td><td>${money2(f.actual)}</td><td>${(f.defGallons||0).toFixed(2)}</td><td>${money(f.total)}</td><td><div class="actionRow"><button class="btn secondary mini" onclick="editFuel(${i})">Edit</button><button class="btn secondary mini" onclick="deleteFuel(${i})">Delete</button></div></td></tr>`).join("") : `<tr><td colspan="8" class="small">No fuel entries yet.</td></tr>`;
+  }
+}
+
+
+function editFuel(i){
+  const f=fuelEntries[i]; if(!f) return;
+  editingFuelIndex=i;
+  $("fuelDate").value = f.date;
+  $("fuelStop").value = f.stop;
+  $("fuelState").value = f.state;
+  $("fuelGallons").value = f.gallons;
+  $("fuelPump").value = f.pump;
+  $("fuelDisc").value = f.discount;
+  $("defGallons").value = f.defGallons || 0;
+  $("defPrice").value = f.defPrice || 0;
+  $("defCost").value = f.defCost || 0;
+  $("fuelMiles").value = f.miles || 0;
+  updateFuelCalc();
+  showPage("fuel");
+  showToast("Editing fuel entry");
+}
+function deleteFuel(i){
+  if(!confirm("Delete this fuel entry?")) return;
+  fuelEntries.splice(i,1);
+  localStorage.setItem("ooc_v11_fuel", JSON.stringify(fuelEntries));
+  renderFuel(); updateDashboard(); showToast("Fuel deleted ✅");
+}
+function clearFuelEntries(){
+  if(!confirm("Clear all fuel entries?")) return;
+  fuelEntries=[];
+  localStorage.setItem("ooc_v11_fuel", JSON.stringify(fuelEntries));
+  renderFuel(); updateDashboard(); showToast("Fuel entries cleared ✅");
+}
+function updateWeeklyReview(){
+ const weekLoads = loadsInRange(7);
+ const count=weekLoads.length;
+ const gross=weekLoads.reduce((a,b)=>a+b.gross,0);
+ const truck=weekLoads.reduce((a,b)=>a+b.revenueTruck,0);
+ const companyDeduct=weekLoads.reduce((a,b)=>a+b.carrierCutDollars,0);
+ const net=weekLoads.reduce((a,b)=>a+b.net,0);
+ const fuel=weekLoads.reduce((a,b)=>a+b.fuel,0);
+ const maint=weekLoads.reduce((a,b)=>a+b.maint,0);
+ const tax=weekLoads.reduce((a,b)=>a+b.tax,0);
+ const misc=weekLoads.reduce((a,b)=>a+b.misc,0);
+ const fixed=weekLoads.reduce((a,b)=>a+b.fixedAllocation,0);
+ const preTax=weekLoads.reduce((a,b)=>a+b.beforeTax,0);
+ const miles=weekLoads.reduce((a,b)=>a+b.totalMiles,0);
+ const avgHour=count ? weekLoads.reduce((a,b)=>a+b.profitHour,0)/count : 0;
+ const avgDh=count ? weekLoads.reduce((a,b)=>a+b.dhPct,0)/count : 0;
+ const mStart=val("maintenanceCurrent");
+ const mEnd=mStart+maint;
+ const mRemain=Math.max(0,val("maintenanceGoal")-mEnd);
+ const remainCash = net - val("plannedDraw");
+
+ if($("wkLoads")){
+   $("wkLoads").textContent=count; $("wkMiles").textContent=Math.round(miles); $("wkAvgHour").textContent=money(avgHour)+"/hr"; $("wkAvgDh").textContent=avgDh.toFixed(1)+"%";
+   $("wkGross").textContent=money(gross); $("wkCompanyDeduct").textContent=money(companyDeduct); $("wkTruck").textContent=money(truck);
+   $("wkFuel").textContent=money(fuel); $("wkMaint").textContent=money(maint); $("wkTax").textContent=money(tax); $("wkMisc").textContent=money(misc); $("wkFixed").textContent=money(fixed); $("wkPreTax").textContent=money(preTax); $("wkNet").textContent=money(net);
+   $("wkDraw").textContent=money(val("plannedDraw")); $("wkRemainCash").textContent=money(remainCash);
+   $("wkMaintStart").textContent=money(mStart); $("wkMaintAdded").textContent=money(maint); $("wkMaintEnd").textContent=money(mEnd); $("wkMaintGoal").textContent=money(val("maintenanceGoal")); $("wkMaintRemain").textContent=money(mRemain);
+   $("wkLoadRows").innerHTML = count ? weekLoads.map(l=>`<tr><td>${l.origin} → ${l.destination}</td><td>${money(l.gross)}</td><td>${money(l.revenueTruck)}</td><td>${money(l.net)}</td><td>${money(l.profitHour)}/hr</td><td>${l.dhPct.toFixed(1)}%</td></tr>`).join("") : `<tr><td colspan="6" class="small">No saved loads in the last 7 days.</td></tr>`;
+   renderClosedWeeks();
+ }
+}
+
+function updateDashboard(){
+ const gross=loads.reduce((a,b)=>a+b.gross,0), truck=loads.reduce((a,b)=>a+b.revenueTruck,0), net=loads.reduce((a,b)=>a+b.net,0);
+ const goal = val("weeklyGoal") || 4000;
+ const pct = Math.max(0, Math.min(100, (net/goal)*100));
+ $("dashGross").textContent = money(gross); $("dashTruck").textContent = money(truck); $("dashNet").textContent = money(net);
+ $("goalFill").style.width = pct+"%"; $("goalText").textContent = Math.round(pct)+"% toward weekly goal.";
+ const avgHour = loads.length ? loads.reduce((a,b)=>a+b.profitHour,0)/loads.length : 0;
+ const score = Math.max(0, Math.min(10, pct/10 + (avgHour >= 50 ? 1 : 0) - (net < 0 ? 3 : 0)));
+ const sl=stoplight(score);
+ $("dashHealth").textContent = score.toFixed(1)+"/10";
+ $("dashHealthLabel").innerHTML = `<i class="stop ${sl.class}"></i>${sl.label}`;
+ $("profileHealth").textContent = score.toFixed(1)+"/10";
+ $("profileHealthLabel").innerHTML = `<i class="stop ${sl.class}"></i>${sl.label}`;
+ $("weeklyReview").innerHTML = loads.length ? `You saved <b>${loads.length}</b> load(s). Net profit is <b>${money(net)}</b>. Average profit/hour is <b>${money(avgHour)}/hr</b>.` : "Save a load to generate your weekly review.";
+ const ach=[]; if(loads.length>=1) ach.push("🚛 First load tracked"); if(pct>=100) ach.push("🎯 Weekly goal reached"); if(avgHour>=50) ach.push("💰 Strong profit/hour");
+ $("achievements").innerHTML = ach.length ? ach.join("<br>") : "No achievements yet.";
+ const chart=$("chart"); chart.innerHTML="";
+ const bars=[0,0,0,0,0,0,0]; loads.forEach((l,i)=>bars[i%7]+=l.net);
+ const max=Math.max(...bars,1); bars.forEach(v=>{const b=document.createElement("div"); b.style.height=Math.max(4,(v/max)*100)+"%"; chart.appendChild(b);});
+ updateWeeklyReview(); renderSettlements(); renderFuel(); renderHistory();
+}
+
+
+function renderHistory(){
+  const tb=$("historyRows"); if(!tb) return;
+  tb.innerHTML = loads.length ? loads.map((l,i)=>`<tr><td>${l.savedAt||l.date}</td><td>${l.origin} → ${l.destination}</td><td>${money(l.gross)}</td><td>${money(l.net)}</td><td>${l.decision||"N/A"}</td><td><span class="badge ${(l.strengthClass||"strong")}">${l.strength||"N/A"}</span></td><td><div class="actionRow"><button class="btn secondary mini" onclick="viewLoad(${i})">View</button><button class="btn secondary mini" onclick="editLoad(${i})">Edit</button><button class="btn secondary mini" onclick="duplicateLoad(${i})">Duplicate</button><button class="btn secondary mini" onclick="deleteLoad(${i})">Delete</button></div></td></tr>`).join("") : `<tr><td colspan="7" class="small">No saved loads yet.</td></tr>`;
+}
+function openModal(title, body){
+  $("modalTitle").textContent=title; $("modalBody").innerHTML=body; $("modalBackdrop").classList.add("show");
+}
+function closeModal(){ $("modalBackdrop").classList.remove("show"); }
+function viewLoad(i){
+  const l=loads[i]; if(!l) return;
+  openModal("Load Audit Trail", `
+    <div class="grid2">
+      <div class="card"><h3>Basic Info</h3><table><tbody>
+        <tr><td>Saved</td><td>${l.savedAt||l.date}</td></tr><tr><td>Lane</td><td>${l.origin} → ${l.destination}</td></tr>
+        <tr><td>Decision</td><td>${l.decision||"N/A"}</td></tr><tr><td>Strength</td><td>${l.strength||"N/A"}</td></tr><tr><td>Deadhead Warning</td><td>${l.deadheadWarning ? "Yes" : "No"}</td></tr>
+      </tbody></table></div>
+      <div class="card"><h3>Inputs</h3><table><tbody>
+        <tr><td>Linehaul</td><td>${money(l.inputs?.linehaul)}</td></tr><tr><td>FSC</td><td>${money(l.inputs?.fsc)}</td></tr>
+        <tr><td>Loaded miles</td><td>${l.inputs?.loadedMiles||0}</td></tr><tr><td>Deadhead miles</td><td>${l.inputs?.deadheadMiles||0}</td></tr>
+        <tr><td>Tolls/misc</td><td>${money(l.inputs?.miscCost)}</td></tr><tr><td>MPG</td><td>${l.inputs?.mpg||0}</td></tr>
+      </tbody></table></div>
+      <div class="card"><h3>Expenses</h3><table><tbody>
+        <tr><td>Fuel + DEF</td><td>${money(l.fuel)}</td></tr><tr><td>Fuel source</td><td>${l.fuelSource||"estimated"}</td></tr>
+        <tr><td>Maintenance</td><td>${money(l.maint)}</td></tr><tr><td>Fixed costs</td><td>${money(l.fixedAllocation)}</td></tr>
+        <tr><td>Tax reserve</td><td>${money(l.tax)}</td></tr>
+      </tbody></table></div>
+      <div class="card"><h3>Results</h3><table><tbody>
+        <tr><td>Gross</td><td>${money(l.gross)}</td></tr><tr><td>Revenue to truck</td><td>${money(l.revenueTruck)}</td></tr>
+        <tr><td>Net</td><td>${money(l.net)}</td></tr><tr><td>Profit/hour</td><td>${money(l.profitHour)}/hr</td></tr>
+        <tr><td>Driver RPM</td><td>${money2(l.driverRpm)}</td></tr>
+      </tbody></table></div>
+    </div>
+    <br>${l.uploadContext ? `<div class="card"><h3>Upload Context</h3><table><tbody>
+        <tr><td>Source</td><td>${l.uploadContext.source||""}</td></tr>
+        <tr><td>Broker / Carrier</td><td>${l.uploadContext.broker||""}</td></tr>
+        <tr><td>Stops</td><td>${l.uploadContext.stops||0}</td></tr>
+        <tr><td>Weight</td><td>${l.uploadContext.weight||0} lbs</td></tr>
+        <tr><td>Equipment</td><td>${l.uploadContext.equipment||""}</td></tr>
+        <tr><td>Commodity</td><td>${l.uploadContext.commodity||""}</td></tr>
+        <tr><td>Pickup</td><td>${l.uploadContext.pickup||""}</td></tr>
+        <tr><td>Delivery</td><td>${l.uploadContext.delivery||""}</td></tr>
+      </tbody></table></div><br>` : ""}
+    <div class="card"><h3>Why</h3><p class="small">${l.decisionReason||"No reason saved."}</p></div>
+  `);
+}
+function editLoad(i){
+  const l=loads[i]; if(!l || !l.inputs) return;
+  editingLoadIndex=i;
+  $("carrier").value = l.inputs.carrier || $("carrier").value;
+  $("cutAppliesTo").value = l.inputs.cutAppliesTo || $("cutAppliesTo").value;
+  if(l.inputs.revenueInputBasis && $("revenueInputBasis")) $("revenueInputBasis").value = l.inputs.revenueInputBasis;
+  $("linehaulDriverPercent").value = l.inputs.linehaulDriverPercent ?? $("linehaulDriverPercent").value;
+  $("orderDriverPercent").value = l.inputs.orderDriverPercent ?? $("orderDriverPercent").value;
+  $("fscDriverPercent").value = l.inputs.fscDriverPercent ?? $("fscDriverPercent").value;
+  $("fscKnownAtBooking").value = l.inputs.fscKnownAtBooking || $("fscKnownAtBooking").value;
+  updateCarrierLabels();
+  
+  $("origin").value=l.origin; $("destination").value=l.destination;
+  $("linehaul").value=l.inputs.linehaul; $("fsc").value=l.inputs.fsc; $("accessorials").value=l.inputs.accessorials;
+  $("loadedMiles").value=l.inputs.loadedMiles; $("deadheadMiles").value=l.inputs.deadheadMiles; $("tripHours").value=l.inputs.tripHours;
+  $("miscCost").value=l.inputs.miscCost; $("avgSpeed").value=l.inputs.avgSpeed;
+  showPage("analyze"); analyzeLoad(false); showToast("Editing saved load");
+}
+function duplicateLoad(i){
+  const l=loads[i]; if(!l || !l.inputs) return;
+  editingLoadIndex=null;
+  $("carrier").value = l.inputs.carrier || $("carrier").value;
+  $("cutAppliesTo").value = l.inputs.cutAppliesTo || $("cutAppliesTo").value;
+  if(l.inputs.revenueInputBasis && $("revenueInputBasis")) $("revenueInputBasis").value = l.inputs.revenueInputBasis;
+  $("linehaulDriverPercent").value = l.inputs.linehaulDriverPercent ?? $("linehaulDriverPercent").value;
+  $("orderDriverPercent").value = l.inputs.orderDriverPercent ?? $("orderDriverPercent").value;
+  $("fscDriverPercent").value = l.inputs.fscDriverPercent ?? $("fscDriverPercent").value;
+  $("fscKnownAtBooking").value = l.inputs.fscKnownAtBooking || $("fscKnownAtBooking").value;
+  updateCarrierLabels();
+  
+  $("origin").value=l.origin; $("destination").value=l.destination;
+  $("linehaul").value=l.inputs.linehaul; $("fsc").value=l.inputs.fsc; $("accessorials").value=l.inputs.accessorials;
+  $("loadedMiles").value=l.inputs.loadedMiles; $("deadheadMiles").value=l.inputs.deadheadMiles; $("tripHours").value=l.inputs.tripHours;
+  $("miscCost").value=l.inputs.miscCost; $("avgSpeed").value=l.inputs.avgSpeed;
+  showPage("analyze"); analyzeLoad(false); showToast("Duplicated load inputs");
+}
+function deleteLoad(i){
+  if(!confirm("Delete this saved load?")) return;
+  loads.splice(i,1);
+  localStorage.setItem("ooc_v11_loads", JSON.stringify(loads));
+  updateDashboard(); showToast("Load deleted ✅");
+}
+function clearLoads(){
+  if(!confirm("Clear all saved loads?")) return;
+  loads=[];
+  localStorage.setItem("ooc_v11_loads", JSON.stringify(loads));
+  updateDashboard(); showToast("Loads cleared ✅");
+}
+
+function getCurrentWeekSummary(){
+  const weekLoads = loadsInRange(7);
+  return {
+    closedAt: new Date().toLocaleString(),
+    loadCount: weekLoads.length,
+    gross: weekLoads.reduce((a,b)=>a+b.gross,0),
+    revenueTruck: weekLoads.reduce((a,b)=>a+b.revenueTruck,0),
+    carrierCut: weekLoads.reduce((a,b)=>a+b.carrierCutDollars,0),
+    fuel: weekLoads.reduce((a,b)=>a+b.fuel,0),
+    maintenance: weekLoads.reduce((a,b)=>a+b.maint,0),
+    misc: weekLoads.reduce((a,b)=>a+b.misc,0),
+    fixed: weekLoads.reduce((a,b)=>a+b.fixedAllocation,0),
+    tax: weekLoads.reduce((a,b)=>a+b.tax,0),
+    net: weekLoads.reduce((a,b)=>a+b.net,0),
+    miles: weekLoads.reduce((a,b)=>a+b.totalMiles,0)
+  };
+}
+function closeOutWeek(){
+  const summary = getCurrentWeekSummary();
+  if(!summary.loadCount){
+    alert("No loads in the last 7 days to close out.");
+    return;
+  }
+  if(!confirm(`Close this week?\n\nLoads: ${summary.loadCount}\nGross: ${money(summary.gross)}\nNet: ${money(summary.net)}\n\nThis creates a snapshot but does not delete your load history.`)) return;
+  closedWeeks.push(summary);
+  localStorage.setItem("ooc_v12_closed_weeks", JSON.stringify(closedWeeks));
+  renderClosedWeeks();
+  showToast("Week closed ✅");
+}
+function renderClosedWeeks(){
+  const tb=$("closedWeekRows"); if(!tb) return;
+  tb.innerHTML = closedWeeks.length ? closedWeeks.slice().reverse().map(w=>`<tr><td>${w.closedAt}</td><td>${w.loadCount}</td><td>${money(w.gross)}</td><td>${money(w.revenueTruck)}</td><td>${money(w.fuel)}</td><td>${money(w.net)}</td></tr>`).join("") : `<tr><td colspan="6" class="small">No closed weeks yet.</td></tr>`;
+}
+
+function previewLoadScreenshot(e){
+  const file = e.target.files && e.target.files[0];
+  const box = $("loadScreenshotPreview");
+  if(!file || !box){
+    if(box) box.textContent = "No screenshot uploaded yet.";
+    return;
+  }
+  const url = URL.createObjectURL(file);
+  box.innerHTML = `<img src="${url}" alt="Uploaded load screenshot preview">`;
+  showToast("Screenshot loaded 📸");
+  validateUploadFields();
+}
+
+function uploadVal(id){
+  return ($(id)?.value || "").trim();
+}
+
+function validateUploadFields(){
+  const required = [
+    ["uploadOrigin", "Origin"],
+    ["uploadDestination", "Destination"],
+    ["uploadLoadedMiles", "Loaded miles"],
+    ["uploadGrossPay", "Gross pay / offered rate"]
+  ];
+  const missing = required.filter(([id]) => !uploadVal(id));
+  const box = $("uploadValidation");
+  if(!box) return missing;
+  if(missing.length){
+    box.innerHTML = missing.map(([,label])=>`<div class="warningItem">⚠️ Missing ${label}. Enter manually before analyzing.</div>`).join("");
+  } else {
+    box.innerHTML = `<div class="successItem">✅ Required fields found. Ready to send into Analyze.</div>`;
+  }
+  return missing;
+}
+
+function sendUploadToAnalyze(){
+  const missing = validateUploadFields();
+  if(missing.length){
+    showToast("Missing required fields");
+    return;
+  }
+
+  $("origin").value = uploadVal("uploadOrigin");
+  $("destination").value = uploadVal("uploadDestination");
+  $("loadedMiles").value = val("uploadLoadedMiles");
+  $("deadheadMiles").value = val("uploadDeadheadMiles");
+  $("linehaul").value = val("uploadGrossPay");
+  $("fsc").value = val("uploadFsc");
+
+  window.lastUploadContext = {
+    source: uploadVal("uploadSource"),
+    broker: uploadVal("uploadBroker"),
+    stops: val("uploadStops"),
+    weight: val("uploadWeight"),
+    equipment: uploadVal("uploadEquipment"),
+    commodity: uploadVal("uploadCommodity"),
+    pickup: uploadVal("uploadPickup"),
+    delivery: uploadVal("uploadDelivery")
+  };
+
+  showPage("analyze");
+  analyzeLoad(false);
+  showToast("Load sent to Analyze ✅");
+}
+
+function clearUploadFields(){
+  ["uploadBroker","uploadOrigin","uploadDestination","uploadLoadedMiles","uploadDeadheadMiles","uploadGrossPay","uploadFsc","uploadStops","uploadWeight","uploadEquipment","uploadCommodity","uploadPickup","uploadDelivery"].forEach(id=>{
+    if($(id)) $(id).value = "";
+  });
+  if($("loadScreenshotFile")) $("loadScreenshotFile").value = "";
+  if($("loadScreenshotPreview")) $("loadScreenshotPreview").textContent = "No screenshot uploaded yet.";
+  validateUploadFields();
+  showToast("Upload fields cleared");
+}
+
+function previewFile(e){ const f=e.target.files[0]; if(f && f.type.startsWith("image/")){ const url=URL.createObjectURL(f); $("filePreview").src=url; $("filePreview").style.display="inline-block"; } }
+function previewFuelReceipt(e){ const f=e.target.files[0]; if(f && f.type.startsWith("image/")){ const url=URL.createObjectURL(f); $("fuelPreview").src=url; $("fuelPreview").style.display="inline-block"; } }
+function settlementPicked(e){ const f=e.target.files[0]; currentSettlementFile=f ? f.name : ""; $("settlementFile").textContent = currentSettlementFile ? "Selected: "+currentSettlementFile : ""; }
+function saveSettlement(){ settlements.push({date:new Date().toLocaleDateString(), file:currentSettlementFile||"Manual entry", gross:val("settleGross"), net:val("settleNet"), fuel:val("settleFuel")}); localStorage.setItem("ooc_v11_settlements", JSON.stringify(settlements)); renderSettlements(); showToast("Settlement saved ✅"); }
+function renderSettlements(){ const tb=$("settleTable"); if(!tb) return; tb.innerHTML = settlements.length ? settlements.map(s=>`<tr><td>${s.date}</td><td>${s.file}</td><td>${money(s.gross)}</td><td>${money(s.net)}</td><td>${money(s.fuel)}</td></tr>`).join("") : `<tr><td colspan="5" class="small">No settlements saved yet.</td></tr>`; }
+function factoryReset(){
+  const warning = "This permanently deletes all local data: profile, loads, fuel entries, settlements, and closed weeks. Type DELETE to continue.";
+  const answer = prompt(warning);
+  if(answer !== "DELETE"){
+    showToast("Reset cancelled");
+    return;
+  }
+  localStorage.removeItem("ooc_v11_profile");
+  localStorage.removeItem("ooc_v11_loads");
+  localStorage.removeItem("ooc_v11_settlements");
+  localStorage.removeItem("ooc_v11_fuel");
+  localStorage.removeItem("ooc_v12_closed_weeks");
+  location.reload();
+}
+
+document.querySelectorAll("input,select").forEach(el=>{
+ el.addEventListener("input",()=>{
+   if(["loadedMiles","deadheadMiles","avgSpeed"].includes(el.id)) updateTripHours();
+   if(["fuelGallons","fuelPump","fuelDisc","defGallons","defPrice","defCost","fuelMiles"].includes(el.id)) updateFuelCalc();
+   saveProfile();
+   if($("analyze").classList.contains("active")) analyzeLoad(false);
+ });
+ el.addEventListener("change",()=>{
+   if(el.id==="carrier") carrierDefaults();
+   if(["cutAppliesTo","fscKnownAtBooking","linehaulDriverPercent","orderDriverPercent","fscDriverPercent","revenueInputBasis"].includes(el.id)) updateCarrierLabels();
+   if(["loadedMiles","deadheadMiles","avgSpeed"].includes(el.id)) updateTripHours();
+   if(["fuelGallons","fuelPump","fuelDisc","defGallons","defPrice","defCost","fuelMiles"].includes(el.id)) updateFuelCalc();
+   saveProfile();
+   if($("analyze").classList.contains("active")) analyzeLoad(false);
+ });
+});
+
+loadProfile();
+if(!$("fuelDate").value) $("fuelDate").valueAsDate = new Date();
+updateFuelCalc(); updateTripHours(); updateCarrierLabels(); saveProfile(); analyzeLoad(false); updateDashboard();
+</script>
+</body>
+</html>
